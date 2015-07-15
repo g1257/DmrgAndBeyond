@@ -1,0 +1,107 @@
+### User Configurable Options
+
+## To set up, follow the steps [1], [2], [3] below
+
+#########
+## [1]
+##
+## Set which compiler to use by defining CCCOM:
+##GNU GCC compiler
+CCCOM=g++ -m64 -std=c++11
+##Clang compiler (good to use on Mac OS)
+#CCCOM=clang++ -std=c++1y
+##Intel C++ compiler (good to use with Intel MKL if available)
+#CCCOM=icpc -std=c++11
+#########
+
+#########
+## [2]
+## 
+## BLAS/LAPACK Related Options
+## 
+## o The variable PLATFORM can be set to macos,lapack,mkl, or acml.
+##   This tells ITensor which style of BLAS/Lapack library to expect.
+## 
+## o BLAS_LAPACK_LIBFLAGS should be something like 
+##   -L/path/to/lapack/lib -llapack -lblas
+##   though the names of the static libraries (the files referred
+##   to by the -l flags) can be highly variable - see examples below.
+##
+## o BLAS_LAPACK_INCLUDEFLAGS is currently required for the mkl platform only.
+##   It should be set to -I/path/to/lapack/include
+##   where "include" is a folder full of .h header files in the source code 
+##   of your BLAS/Lapack library (see examples below).
+##
+
+##
+## Mac OSX system
+##
+
+#PLATFORM=macos
+#BLAS_LAPACK_LIBFLAGS=-framework Accelerate
+
+##
+## Example using a C interface to LAPACK on GNU/LINUX systems
+##
+
+PLATFORM=lapack
+BLAS_LAPACK_LIBFLAGS=/usr/lib64/liblapack.so.3 /usr/lib64/libblas.so.3
+
+##
+## Example using the Intel MKL library
+##
+
+#PLATFORM=mkl
+## MKL example (recommended with Intel C++ compiler icpc for performance on Intel CPUs)
+#BLAS_LAPACK_LIBFLAGS=-L/opt/intel/composer_xe_2013_sp1.1.106/mkl/lib/intel64 -lmkl_intel_lp64 -lmkl_intel_thread -lmkl_rt -lmkl_core -liomp5 -lpthread
+#BLAS_LAPACK_INCLUDEFLAGS=-I/opt/intel/composer_xe_2013_sp1.1.106/mkl/include
+
+##
+## Example using the AMD ACML library
+##
+
+#PLATFORM=acml
+#BLAS_LAPACK_LIBFLAGS=-L/opt/acml5.1.0/gfortran64/lib -lacml -lgfortran -lpthread
+
+
+#########
+## [3]
+##
+## This step is optional, but if you wish to customize the flags
+## used to compile optimized and debug code, you can do so here.
+
+## Flags to give the compiler for "release mode"
+OPTIMIZATIONS=-O2 -DNDEBUG -Wall
+
+## Flags to give the compiler for "debug mode"
+DEBUGFLAGS=-DDEBUG -DMATRIXBOUNDS -DITENSOR_USE_AT -DBOUNDS -g -Wall
+
+
+###
+### Other Makefile variables defined for convenience.
+### Not necessary to modify these for most cases.
+###
+
+PREFIX=../../ITensor
+
+ITENSOR_LIBDIR=$(PREFIX)/lib
+ITENSOR_INCLUDEDIR=$(PREFIX)/include
+
+ITENSOR_LIBNAMES=itensor matrix utilities
+ITENSOR_LIBFLAGS=$(patsubst %,-l%, $(ITENSOR_LIBNAMES))
+ITENSOR_LIBFLAGS+= $(BLAS_LAPACK_LIBFLAGS)
+ITENSOR_LIBGFLAGS=$(patsubst %,-l%-g, $(ITENSOR_LIBNAMES))
+ITENSOR_LIBGFLAGS+= $(BLAS_LAPACK_LIBFLAGS)
+ITENSOR_LIBS=$(patsubst %,$(ITENSOR_LIBDIR)/lib%.a, $(ITENSOR_LIBNAMES))
+ITENSOR_GLIBS=$(patsubst %,$(ITENSOR_LIBDIR)/lib%-g.a, $(ITENSOR_LIBNAMES))
+
+ITENSOR_INCLUDEFLAGS=-I$(ITENSOR_INCLUDEDIR) $(BLAS_LAPACK_INCLUDEFLAGS)
+
+ifndef CCCOM
+$(error Makefile variable CCCOM not defined in options.mk; please define it.)
+endif
+
+CCFLAGS=-I. $(ITENSOR_INCLUDEFLAGS) $(OPTIMIZATIONS) -Wno-unused-variable
+CCGFLAGS=-I. $(ITENSOR_INCLUDEFLAGS) $(DEBUGFLAGS)
+LIBFLAGS=-L$(ITENSOR_LIBDIR) $(ITENSOR_LIBFLAGS)
+LIBGFLAGS=-L$(ITENSOR_LIBDIR) $(ITENSOR_LIBGFLAGS)
