@@ -1,6 +1,6 @@
-# Quick Start
+# Preliminaries
  
-# Disclaimer and Licensing
+## Disclaimer and Licensing
  
 DmrgAndBeyond is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -14,25 +14,25 @@ You should have received a copy of the GNU General Public License
 along with DmrgAndBeyond. If not, see <http://www.gnu.org/licenses/>.
 The full software license for DmrgAndBeyond version 1.0.0 
 can be found in
-file COPYING. 
+file LICENSE. 
 
-# Please cite this work
+## Please cite this work
 
 DmrgAndBeyond is porcelain for ITensor.
 The full software license for DmrgAndBeyond version 0.1
 can be found in
-file COPYING. 
+file LICENSE. 
 You are welcomed to use it and publish data 
 obtained with DmrgAndBeyond. If you do, please cite this
 work. Explain How To Cite This Work. FIXME. TBW.
 
-# About ITensor
+## About ITensor
 
 ITensor is developed by E. M. Stoudenmire and S. R. White and contributors.
 The full software license for ITensor can be found
-in https://github.com/ITensor/ITensor/blob/master/LICENSE
+at https://github.com/ITensor/ITensor/blob/master/LICENSE
 
-# Hash of the latest commit 
+## Hash of the latest commit 
 
 Hash of the latest commit is also posted at
 https://web.ornl.gov/~gz1/hashes.html
